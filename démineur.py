@@ -15,4 +15,4 @@ for i in range(NB_MINES):
     matrice[row][col] = 9
 
 print(matrice)
-print("Je te chie dans la bouche")
+
