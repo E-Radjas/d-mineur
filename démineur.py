@@ -13,5 +13,5 @@ for i in range(NB_MINES):
         row = rd.randint(0, RANGEES - 1)
         col = rd.randint(0, COLONNES - 1)
     matrice[row][col] = 9
-
+matrice2=[[0 for j in range(COLONNES+2)] for i in range(RANGEES+2)]
 print(matrice)
