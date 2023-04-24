@@ -1,3 +1,3 @@
 # d-mineur
-Le démineur NSI
+Le démineur NSI, 
 Créeons un démineur
