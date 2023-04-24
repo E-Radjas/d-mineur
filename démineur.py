@@ -15,4 +15,3 @@ for i in range(NB_MINES):
     matrice[row][col] = 9
 
 print(matrice)
-
