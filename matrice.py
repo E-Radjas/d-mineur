@@ -14,7 +14,8 @@ for i in range(NB_MINES):
         col = rd.randint(0, COLONNES - 1)
     plateau[row][col] = 9
 
-matrice = [[0 for j in range(COLONNES + 2)] for i in range(RANGEES + 2)]
+# Affichage du cadre
+matrice = [[11 for j in range(COLONNES + 2)] for i in range(RANGEES + 2)]
 
 
 for i in range(RANGEES):
