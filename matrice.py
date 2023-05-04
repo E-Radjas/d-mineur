@@ -32,4 +32,5 @@ for i in range(1, RANGEES+1):
                         nb_autour += 1
             matrice[i][j] = nb_autour
 
-print(matrice)
+for ligne in matrice:
+    print(ligne)
