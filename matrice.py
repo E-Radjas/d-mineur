@@ -2,12 +2,6 @@ import random as rd
 
 MINES = [rd.randint(0, 9)]
 NB_MINES = 10
-rangees = 10
-COLONNES = 10
-import random as rd
-
-MINES = [rd.randint(0, 9)]
-NB_MINES = 10
 RANGEES = 10
 COLONNES = 10
 plateau = [[0 for j in range(COLONNES)] for i in range(RANGEES)]
@@ -38,10 +32,27 @@ for i in range(1, RANGEES+1):
                         nb_autour += 1
             matrice[i][j] = nb_autour
 
-symbol=[' ','1','2','3','4','5','6','7','8','X']
+symbol=['0','1','2','3','4','5','6','7','8','X',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ']
 ligne=0
-print("+---+---+---+---+---+---+---+---+---+---+")
-for i in range(1,11):
-    ligne+=1
-    print("|",symbol[matrice[ligne][1]], "|", symbol[matrice[ligne][2]], "|", symbol[matrice[ligne][3]],"|",symbol[matrice[ligne][4]], "|", symbol[matrice[ligne][5]], "|", symbol[matrice[ligne][6]],"|",symbol[matrice[ligne][7]], "|", symbol[matrice[ligne][8]], "|", symbol[matrice[ligne][9]],"|",symbol[matrice[ligne][10]],"|")
+
+
+for x in range(1,11):
+    for b in range(1,11):
+        matrice[x][b]+=10
+
+def affichage():
+    ligne=0
+    print("  1   2   3   4   5   6   7   8   9  10")
     print("+---+---+---+---+---+---+---+---+---+---+")
+    for i in range(1,11):
+        ligne+=1
+        print("|",symbol[matrice[ligne][1]], "|", symbol[matrice[ligne][2]], "|", symbol[matrice[ligne][3]],"|",symbol[matrice[ligne][4]], "|", symbol[matrice[ligne][5]], "|", symbol[matrice[ligne][6]],"|",symbol[matrice[ligne][7]], "|", symbol[matrice[ligne][8]], "|", symbol[matrice[ligne][9]],"|",symbol[matrice[ligne][10]],"|",ligne)
+        print("+---+---+---+---+---+---+---+---+---+---+")
+def tour():
+    affichage()
+    coordX=int(input('Entrer la position X de votre sélection'))
+    coordY=int(input('Entrer la position Y de votre sélection'))
+    matrice[coordX][coordY]-=10
+    tour()
+tour()
+
