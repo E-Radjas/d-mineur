@@ -1,5 +1,6 @@
 import random as rd
 
+
 MINES = [rd.randint(0, 9)]
 NB_MINES = 10
 RANGEES = 10
@@ -50,9 +51,30 @@ def affichage():
         print("+---+---+---+---+---+---+---+---+---+---+")
 def tour():
     affichage()
-    coordX=int(input('Entrer la position X de votre sélection'))
-    coordY=int(input('Entrer la position Y de votre sélection'))
-    matrice[coordX][coordY]-=10
+    decouverte()
     tour()
+
+def decouverte():
+    coordX = int(input('Entrer la position X de votre sélection'))
+    if 0<coordX<11:
+        coordY = int(input('Entrer la position Y de votre sélection'))
+        if 0<coordY<11:
+            if matrice[coordY][coordX]>9:
+                matrice[coordY][coordX]-=10
+                if matrice[coordY][coordX] == 9:
+                    perdu()
+                    quit()
+            else: tour()
+        else: tour()
+    else: tour()
+
+def perdu():
+    print('Vous avez perdu !')
+    for x1 in range(1, 11):
+        for b1 in range(1, 11):
+            if matrice[x1][b1] == 19:
+                matrice[x1][b1]-=10
+    affichage()
+    quit()
 tour()
 
