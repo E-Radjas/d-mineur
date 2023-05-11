@@ -1,5 +1,21 @@
 import random as rd
+import pygame as pg
 
+pg.init()
+
+fenetre = pg.display.set_mode((1224, 734), pg.RESIZABLE)
+case_1 = pg.image.load("tile_1.png")
+case_2 = pg.image.load("tile_2.png")
+case_3 = pg.image.load("tile_3.png")
+case_4 = pg.image.load("tile_4.png")
+case_5 = pg.image.load("tile_5.png")
+case_6 = pg.image.load("tile_6.png")
+case_7 = pg.image.load("tile_7.png")
+case_8 = pg.image.load("tile_8.png")
+case_0 = pg.image.load("tile_clicked.png")
+drapeau = pg.image.load("tile_flag.png")
+mine = pg.image.load("tile_mine.png")
+case_vide = pg.image.load("tile_plain.png")
 
 MINES = [rd.randint(0, 9)]
 NB_MINES = 10
@@ -33,8 +49,9 @@ for i in range(1, RANGEES+1):
                         nb_autour += 1
             matrice[i][j] = nb_autour
 
-symbol=['0','1','2','3','4','5','6','7','8','X',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ']
-ligne=0
+symbol = [case_0, case_1, case_2, case_3, case_4, case_5, case_6, case_7, case_8, mine, case_vide, case_vide, case_vide,
+          case_vide, case_vide, case_vide, case_vide, case_vide, case_vide, case_vide]
+ligne = 0
 
 
 for x in range(1,11):
