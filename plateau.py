@@ -1,5 +1,5 @@
 import random as rd
-from time import *
+from time import sleep
 
 MINES = [rd.randint(0, 9)]
 NB_MINES = 10
@@ -95,7 +95,7 @@ def perdu():
                 matrice[x1][b1] -= 10
     affichage()
     print('Vous avez perdu !')
-    time.sleep(10)
+    sleep(10)
     quit()
 
 
