@@ -60,19 +60,25 @@ def tour():
 
 
 def decouverte():
-    coordX = int(input('Entrer la position X de votre sélection'))
-    if 0 < coordX < 11:
+    try:
+        coordX = int(input('Entrer la position X de votre sélection'))
         coordY = int(input('Entrer la position Y de votre sélection'))
-        if 0 < coordY < 11:
-            if matrice[coordY][coordX] > 9:
-                matrice[coordY][coordX] -= 10
-                if matrice[coordY][coordX] == 9:
-                    perdu()
-                    quit()
-                if matrice[coordY][coordX] == 0:
-                    reveler_cases_adjacentes(coordY, coordX)
-            else:
-                tour()
+    except ValueError:
+        decouverte()
+        return
+
+    if coordX == 0 or coordY == 0:
+        decouverte()
+        return
+
+    if 0 < coordX < 11 and 0 < coordY < 11:
+        if matrice[coordY][coordX] > 9:
+            matrice[coordY][coordX] -= 10
+            if matrice[coordY][coordX] == 9:
+                perdu()
+                quit()
+            if matrice[coordY][coordX] == 0:
+                reveler_cases_adjacentes(coordY, coordX)
         else:
             tour()
     else:
@@ -94,7 +100,7 @@ def perdu():
             if matrice[x1][b1] == 19:
                 matrice[x1][b1] -= 10
     affichage()
-    print('Vous avez perdu !')
+    print('Vous avez perdu ! /n Le jeu se fermera dans 10 secondes')
     sleep(10)
     quit()
 
