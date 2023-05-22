@@ -1,6 +1,5 @@
 import random as rd
 import pygame as pg
-
 def reveler_cases_adjacentes(row, col):
     global matrice
     for di in [-1, 0, 1]:
@@ -9,15 +8,13 @@ def reveler_cases_adjacentes(row, col):
                 matrice[row + di][col + dj] -= 10
                 if matrice[row + di][col + dj] == 0:
                     reveler_cases_adjacentes(row + di, col + dj)
-
-
+        
 def decouverte(coordX, coordY):
     global matrice
     if 0 < coordX < 11 and 0 < coordY < 11:
         if 20>matrice[coordY][coordX] > 9:
             matrice[coordY][coordX] -= 10
             if matrice[coordY][coordX] == 9:
-                # perdu()
                 quit()
             if matrice[coordY][coordX] == 0:
                 reveler_cases_adjacentes(coordY, coordX)
