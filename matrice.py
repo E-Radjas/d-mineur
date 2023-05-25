@@ -1,5 +1,8 @@
 import random as rd
+
 import pygame as pg
+
+
 def reveler_cases_adjacentes(row, col):
     global matrice
     for di in [-1, 0, 1]:
@@ -8,23 +11,28 @@ def reveler_cases_adjacentes(row, col):
                 matrice[row + di][col + dj] -= 10
                 if matrice[row + di][col + dj] == 0:
                     reveler_cases_adjacentes(row + di, col + dj)
-        
+
+
 def decouverte(coordX, coordY):
     global matrice
     if 0 < coordX < 11 and 0 < coordY < 11:
-        if 20>matrice[coordY][coordX] > 9:
+        if 20 > matrice[coordY][coordX] > 9:
             matrice[coordY][coordX] -= 10
             if matrice[coordY][coordX] == 9:
                 quit()
             if matrice[coordY][coordX] == 0:
                 reveler_cases_adjacentes(coordY, coordX)
+
+
 def flag(coordX, coordY):
     global matrice
     if 0 < coordX < 11 and 0 < coordY < 11:
-        if 20>matrice[coordY][coordX] > 9:
+        if 20 > matrice[coordY][coordX] > 9:
             matrice[coordY][coordX] += 10
         elif matrice[coordY][coordX] >= 20:
             matrice[coordY][coordX] -= 10
+
+
 # Constantes
 MINES = [rd.randint(0, 9)]
 NB_MINES = 10
@@ -49,7 +57,7 @@ drapeau = pg.image.load("tile_flag.png").convert_alpha()
 mine = pg.image.load("tile_mine.png").convert_alpha()
 case_vide = pg.image.load("tile_plain.png").convert_alpha()
 drapeau = pg.image.load("tile_flag.png").convert_alpha()
-list_im=[case_0,case_1,case_2,case_3,case_4,case_5,case_6,case_7,case_8, mine, case_vide, drapeau]
+list_im = [case_0, case_1, case_2, case_3, case_4, case_5, case_6, case_7, case_8, mine, case_vide, drapeau]
 
 # Game state setup
 plateau = [[0 for j in range(COLONNES)] for i in range(RANGEES)]
@@ -80,26 +88,27 @@ for i in range(1, RANGEES + 1):
             matrice[i][j] = nb_autour
 for i in range(1, RANGEES + 1):
     for j in range(1, COLONNES + 1):
-        matrice[i][j]+=10
+        matrice[i][j] += 10
 symbol = ['0', '1', '2', '3', '4', '5', '6', '7', '8', 'X', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '►']
 
 # Game loop
 running = True
-clic=False
+clic = False
 while running:
     # Event handling
     for event in pg.event.get():
         if event.type == pg.QUIT:
             running = False
-    if pg.mouse.get_pressed()[0]: decouverte((pg.mouse.get_pos()[0]+64) // 64, (pg.mouse.get_pos()[1]+64) // 64)
-    if pg.mouse.get_pressed()[2] and clic==False:
-        flag((pg.mouse.get_pos()[0]+64) // 64, (pg.mouse.get_pos()[1]+64) // 64)
-        clic=True
-    if pg.mouse.get_pressed()[2]==False : clic=False
+    if pg.mouse.get_pressed()[0]: decouverte((pg.mouse.get_pos()[0] + 64) // 64, (pg.mouse.get_pos()[1] + 64) // 64)
+    if pg.mouse.get_pressed()[2] and clic == False:
+        flag((pg.mouse.get_pos()[0] + 64) // 64, (pg.mouse.get_pos()[1] + 64) // 64)
+        clic = True
+    if pg.mouse.get_pressed()[2] == False: clic = False
     for l in range(1, len(matrice) - 1):
         for c in range(1, len(matrice[0]) - 1):
-            if matrice[l][c]<20:
-                fenetre.blit(list_im[min(matrice[l][c], 10)], (c * 64-64, l * 64-64))
-            else:fenetre.blit(list_im[11], (c * 64-64, l * 64-64))
-                
+            if matrice[l][c] < 20:
+                fenetre.blit(list_im[min(matrice[l][c], 10)], (c * 64 - 64, l * 64 - 64))
+            else:
+                fenetre.blit(list_im[11], (c * 64 - 64, l * 64 - 64))
+
     pg.display.flip()
