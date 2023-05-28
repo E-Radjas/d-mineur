@@ -8,9 +8,9 @@ pg.init()
 
 
 def reveler_cases_adjacentes(row, col):
-    """
-    Révèle récursivement les cases adjacentes vides.
-    """
+
+# Révèle récursivement les cases adjacentes vides.
+
     global matrice
     for di in [-1, 0, 1]:
         for dj in [-1, 0, 1]:
@@ -21,9 +21,9 @@ def reveler_cases_adjacentes(row, col):
 
 
 def découverte(coordX, coordY):
-    """
-    Gère la découverte d'une case par le joueur.
-    """
+
+# Gère la découverte d'une case par le joueur.
+
     global matrice, game_over
     if 0 < coordX < 11 and 0 < coordY < 11:
         if 20 > matrice[coordY][coordX] > 9:
@@ -35,9 +35,9 @@ def découverte(coordX, coordY):
 
 
 def flag(coordX, coordY):
-    """
-    Place ou retire un drapeau sur une case.
-    """
+
+# Place ou retire un drapeau sur une case.
+
     global matrice
     if 0 < coordX < 11 and 0 < coordY < 11:
         if 20 > matrice[coordY][coordX] > 9:
@@ -47,9 +47,7 @@ def flag(coordX, coordY):
 
 
 def verifier_victoire():
-    """
-    Vérifie si le joueur a gagné en découvrant toutes les cases sans mine.
-    """
+# Vérifie si le joueur a gagné en découvrant toutes les cases sans mine.
     global matrice, game_over
     mines_restantes = sum(1 for ligne in matrice for case in ligne if case == 9)
     if mines_restantes == NB_MINES:
