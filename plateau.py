@@ -100,7 +100,7 @@ def perdu():
             if matrice[x1][b1] == 19:
                 matrice[x1][b1] -= 10
     affichage()
-    print('Vous avez perdu ! /n Le jeu se fermera dans 10 secondes')
+    print('Vous avez perdu ! Le jeu se fermera dans 10 secondes')
     sleep(10)
     quit()
 
