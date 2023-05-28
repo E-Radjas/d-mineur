@@ -3,8 +3,14 @@ import time
 
 import pygame as pg
 
+# Initialisation pygame
+pg.init()
+
 
 def reveler_cases_adjacentes(row, col):
+    """
+    Révèle récursivement les cases adjacentes vides.
+    """
     global matrice
     for di in [-1, 0, 1]:
         for dj in [-1, 0, 1]:
@@ -15,6 +21,9 @@ def reveler_cases_adjacentes(row, col):
 
 
 def découverte(coordX, coordY):
+    """
+    Gère la découverte d'une case par le joueur.
+    """
     global matrice, game_over
     if 0 < coordX < 11 and 0 < coordY < 11:
         if 20 > matrice[coordY][coordX] > 9:
@@ -26,6 +35,9 @@ def découverte(coordX, coordY):
 
 
 def flag(coordX, coordY):
+    """
+    Place ou retire un drapeau sur une case.
+    """
     global matrice
     if 0 < coordX < 11 and 0 < coordY < 11:
         if 20 > matrice[coordY][coordX] > 9:
@@ -35,10 +47,30 @@ def flag(coordX, coordY):
 
 
 def verifier_victoire():
+    """
+    Vérifie si le joueur a gagné en découvrant toutes les cases sans mine.
+    """
     global matrice, game_over
     mines_restantes = sum(1 for ligne in matrice for case in ligne if case == 9)
     if mines_restantes == NB_MINES:
         game_over = True
+
+
+def afficher_perdu():
+    """
+    Affiche toutes les mines pendant quelques secondes lorsque le joueur perd.
+    """
+    global matrice
+    for l in range(1, len(matrice) - 1):
+        for c in range(1, len(matrice[0]) - 1):
+            if matrice[l][c] == 9:
+                matrice[l][c] -= 10  # Révèle la mine
+    time.sleep(3)  # Attendre 3 secondes
+
+    # Est-ce que pygame est initialisé ? (pour quitter)
+    if pg.get_init():
+        pg.quit()  # Fermer le jeu
+
 
 
 # Constantes
@@ -103,10 +135,14 @@ running = True
 clic = False
 game_over = False  # Variable pour voir l'état du jeu
 while running:
-    #Evenements pygame
+    # Evenements pygame
     for event in pg.event.get():
         if event.type == pg.QUIT:
             running = False
+
+    if game_over:
+        afficher_perdu()
+
     if pg.mouse.get_pressed()[0]:
         découverte((pg.mouse.get_pos()[0] + 64) // 64, (pg.mouse.get_pos()[1] + 64) // 64)
     if pg.mouse.get_pressed()[2] and not clic:
@@ -128,13 +164,3 @@ while running:
                 fenêtre.blit(list_im[11], (c * 64 - 64, l * 64 - 64))
 
     pg.display.flip()
-
-    # Montrer les mines si le jeu est perdu
-    if game_over:
-        for l in range(1, len(matrice) - 1):
-            for c in range(1, len(matrice[0]) - 1):
-                if matrice[l][c] == 9:
-                    fenêtre.blit(list_im[9], (c * 64 - 64, l * 64 - 64))
-        pg.display.flip()
-        time.sleep(3)
-        running = False
