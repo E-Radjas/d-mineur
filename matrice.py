@@ -1,4 +1,5 @@
 import random as rd
+import time
 
 import pygame as pg
 
@@ -13,13 +14,13 @@ def reveler_cases_adjacentes(row, col):
                     reveler_cases_adjacentes(row + di, col + dj)
 
 
-def decouverte(coordX, coordY):
-    global matrice
+def découverte(coordX, coordY):
+    global matrice, game_over
     if 0 < coordX < 11 and 0 < coordY < 11:
         if 20 > matrice[coordY][coordX] > 9:
             matrice[coordY][coordX] -= 10
             if matrice[coordY][coordX] == 9:
-                quit()
+                game_over = True
             if matrice[coordY][coordX] == 0:
                 reveler_cases_adjacentes(coordY, coordX)
 
@@ -33,17 +34,24 @@ def flag(coordX, coordY):
             matrice[coordY][coordX] -= 10
 
 
+def verifier_victoire():
+    global matrice, game_over
+    mines_restantes = sum(1 for ligne in matrice for case in ligne if case == 9)
+    if mines_restantes == NB_MINES:
+        game_over = True
+
+
 # Constantes
 MINES = [rd.randint(0, 9)]
 NB_MINES = 10
 RANGEES = 10
 COLONNES = 10
 
-# Pygame initialisation
+# Initialisation pygame
 pg.init()
-fenetre = pg.display.set_mode((640, 640), pg.RESIZABLE)
+fenêtre = pg.display.set_mode((640, 640), pg.RESIZABLE)
 
-# Load images
+# Images
 case_1 = pg.image.load("tile_1.png").convert_alpha()
 case_2 = pg.image.load("tile_2.png").convert_alpha()
 case_3 = pg.image.load("tile_3.png").convert_alpha()
@@ -56,10 +64,9 @@ case_0 = pg.image.load("tile_clicked.png").convert_alpha()
 drapeau = pg.image.load("tile_flag.png").convert_alpha()
 mine = pg.image.load("tile_mine.png").convert_alpha()
 case_vide = pg.image.load("tile_plain.png").convert_alpha()
-drapeau = pg.image.load("tile_flag.png").convert_alpha()
 list_im = [case_0, case_1, case_2, case_3, case_4, case_5, case_6, case_7, case_8, mine, case_vide, drapeau]
 
-# Game state setup
+# Mise en place du jeu
 plateau = [[0 for j in range(COLONNES)] for i in range(RANGEES)]
 
 for i in range(NB_MINES):
@@ -76,7 +83,7 @@ for i in range(RANGEES):
     for j in range(COLONNES):
         matrice[i + 1][j + 1] = plateau[i][j]
 
-# Number of mines around a cell
+# Nombre de mines autour de chaque case
 for i in range(1, RANGEES + 1):
     for j in range(1, COLONNES + 1):
         if matrice[i][j] != 9:
@@ -91,24 +98,43 @@ for i in range(1, RANGEES + 1):
         matrice[i][j] += 10
 symbol = ['0', '1', '2', '3', '4', '5', '6', '7', '8', 'X', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '►']
 
-# Game loop
+# Boucle du jeu
 running = True
 clic = False
+game_over = False  # Variable pour voir l'état du jeu
 while running:
-    # Event handling
+    #Evenements pygame
     for event in pg.event.get():
         if event.type == pg.QUIT:
             running = False
-    if pg.mouse.get_pressed()[0]: decouverte((pg.mouse.get_pos()[0] + 64) // 64, (pg.mouse.get_pos()[1] + 64) // 64)
-    if pg.mouse.get_pressed()[2] and clic == False:
+    if pg.mouse.get_pressed()[0]:
+        découverte((pg.mouse.get_pos()[0] + 64) // 64, (pg.mouse.get_pos()[1] + 64) // 64)
+    if pg.mouse.get_pressed()[2] and not clic:
         flag((pg.mouse.get_pos()[0] + 64) // 64, (pg.mouse.get_pos()[1] + 64) // 64)
         clic = True
-    if pg.mouse.get_pressed()[2] == False: clic = False
+    if not pg.mouse.get_pressed()[2]:
+        clic = False
+
+    # Regarder si toutes les cases sont des mines
+    if not game_over:
+        verifier_victoire()
+
+    # Montrer le plateau
     for l in range(1, len(matrice) - 1):
         for c in range(1, len(matrice[0]) - 1):
             if matrice[l][c] < 20:
-                fenetre.blit(list_im[min(matrice[l][c], 10)], (c * 64 - 64, l * 64 - 64))
+                fenêtre.blit(list_im[min(matrice[l][c], 10)], (c * 64 - 64, l * 64 - 64))
             else:
-                fenetre.blit(list_im[11], (c * 64 - 64, l * 64 - 64))
+                fenêtre.blit(list_im[11], (c * 64 - 64, l * 64 - 64))
 
     pg.display.flip()
+
+    # Montrer les mines si le jeu est perdu
+    if game_over:
+        for l in range(1, len(matrice) - 1):
+            for c in range(1, len(matrice[0]) - 1):
+                if matrice[l][c] == 9:
+                    fenêtre.blit(list_im[9], (c * 64 - 64, l * 64 - 64))
+        pg.display.flip()
+        time.sleep(3)
+        running = False
