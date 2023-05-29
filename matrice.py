@@ -11,6 +11,7 @@ MINES = [rd.randint(0, 9)]
 NB_MINES = 10
 RANGEES = 10
 COLONNES = 10
+nb_cases = 100
 
 # Initialisation pygame
 pg.init()
@@ -38,23 +39,27 @@ drap = pg.mixer.Sound('drapeau.wav')
 gagne = pg.mixer.Sound('gagne.wav')
 pg.mixer.music.set_volume(1)
 
+
 def reveler_cases_adjacentes(row, col):
     # Révèle récursivement les cases adjacentes vides.
-    global matrice
+    global matrice, nb_cases
     for di in [-1, 0, 1]:
         for dj in [-1, 0, 1]:
             if matrice[row + di][col + dj] > 9:
                 matrice[row + di][col + dj] -= 10
+                nb_cases -= 1
                 if matrice[row + di][col + dj] == 0:
+                    nb_cases -= 1
                     reveler_cases_adjacentes(row + di, col + dj)
 
 
 def découverte(coordX, coordY):
     # Gère la découverte d'une case par le joueur.
-    global matrice, game_over
+    global matrice, game_over, nb_cases
     if 0 < coordX < 11 and 0 < coordY < 11:
         if 20 > matrice[coordY][coordX] > 9:
             matrice[coordY][coordX] -= 10
+            nb_cases -= 1
             if matrice[coordY][coordX] == 9:
                 pg.mixer.Sound.play(explo)
                 game_over = True
@@ -74,13 +79,18 @@ def flag(coordX, coordY):
             pg.mixer.Sound.play(drap)
 
 
-def verifier_victoire():
-    # Vérifie si le joueur a gagné en découvrant toutes les cases sans mine.
-    global matrice, game_over
-    mines_restantes = sum(1 for ligne in matrice for case in ligne if case == 9)
-    if mines_restantes == NB_MINES:
-        pg.mixer.Sound.play(gagne)
+def verif_vict():
+    global game_over
+    if nb_cases == 10:
         game_over = True
+        font = pg.font.SysFont(None, 48)
+        text = font.render("Victoire !", True, (255, 255, 255))
+        fenêtre.blit(text, (240, 240))
+        pg.display.flip()
+        # Attendre 3 secondes
+        time.sleep(3)
+        # Fermer le jeu
+        pg.quit()
 
 
 def afficher_perdu():
@@ -89,11 +99,12 @@ def afficher_perdu():
     for l in range(1, len(matrice) - 1):
         for c in range(1, len(matrice[0]) - 1):
             if matrice[l][c] == 9:
-               matrice[l][c] = mine  # Remplace par l'icône de mine
+                matrice[l][c] = mine  # Remplace par l'icône de mine
     time.sleep(3)  # Attendre 3 secondes
     # Est-ce que pygame est initialisé ? (pour quitter)
     if pg.get_init():
         pg.quit()  # Fermer le jeu
+
 
 # Mise en place du jeu
 plateau = [[0 for j in range(COLONNES)] for i in range(RANGEES)]
@@ -141,16 +152,18 @@ while running:
         afficher_perdu()
 
     if pg.mouse.get_pressed()[0]:
+        nb_cases -= 1
         découverte((pg.mouse.get_pos()[0] + 64) // 64, (pg.mouse.get_pos()[1] + 64) // 64)
     if pg.mouse.get_pressed()[2] and not clic:
         flag((pg.mouse.get_pos()[0] + 64) // 64, (pg.mouse.get_pos()[1] + 64) // 64)
+        verif_vict()
         clic = True
     if not pg.mouse.get_pressed()[2]:
         clic = False
 
     # Regarder si toutes les cases sont des mines
     if not game_over:
-        verifier_victoire()
+        verif_vict()
 
     # Montrer le plateau
     for l in range(1, len(matrice) - 1):
