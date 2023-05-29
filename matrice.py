@@ -40,18 +40,19 @@ pg.mixer.music.set_volume(1)
 
 def reveler_cases_adjacentes(row, col):
     # Révèle récursivement les cases adjacentes vides.
-    global matrice
+    global matrice, nb_cases
     for di in [-1, 0, 1]:
         for dj in [-1, 0, 1]:
             if matrice[row + di][col + dj] > 9:
                 matrice[row + di][col + dj] -= 10
                 if matrice[row + di][col + dj] == 0:
                     reveler_cases_adjacentes(row + di, col + dj)
+                nb_cases += 1
 
 
 def découverte(coordX, coordY):
     # Gère la découverte d'une case par le joueur.
-    global matrice, game_over
+    global matrice, game_over, nb_cases
     if 0 < coordX < 11 and 0 < coordY < 11:
         if 20 > matrice[coordY][coordX] > 9:
             matrice[coordY][coordX] -= 10
@@ -60,6 +61,7 @@ def découverte(coordX, coordY):
                 game_over = True
             if matrice[coordY][coordX] == 0:
                 reveler_cases_adjacentes(coordY, coordX)
+            nb_cases += 1
 
 
 def flag(coordX, coordY):
@@ -76,9 +78,9 @@ def flag(coordX, coordY):
 
 def verifier_victoire():
     # Vérifie si le joueur a gagné en découvrant toutes les cases sans mine.
-    global matrice, game_over
+    global matrice, game_over, nb_cases
     mines_restantes = sum(1 for ligne in matrice for case in ligne if case == 9)
-    if mines_restantes == NB_MINES:
+    if mines_restantes == NB_MINES and nb_cases == RANGEES * COLONNES - NB_MINES:
         pg.mixer.Sound.play(gagne)
         game_over = True
 
@@ -86,10 +88,17 @@ def verifier_victoire():
 def afficher_perdu():
     # Affiche toutes les mines pendant quelques secondes lorsque le joueur perd.
     global matrice
+    for x1 in range(1, 11):
+        for b1 in range(1, 11):
+            if matrice[x1][b1] == 19:
+                matrice[x1][b1] -= 10
     for l in range(1, len(matrice) - 1):
         for c in range(1, len(matrice[0]) - 1):
-            if matrice[l][c] == 9:
-               matrice[l][c] = mine  # Remplace par l'icône de mine
+            if matrice[l][c] < 20:
+                fenêtre.blit(list_im[min(matrice[l][c], 10)], (c * 64 - 64, l * 64 - 64))
+            else:
+                fenêtre.blit(list_im[11], (c * 64 - 64, l * 64 - 64))
+    pg.display.flip()
     time.sleep(3)  # Attendre 3 secondes
     # Est-ce que pygame est initialisé ? (pour quitter)
     if pg.get_init():
@@ -131,6 +140,7 @@ symbol = ['0', '1', '2', '3', '4', '5', '6', '7', '8', 'X', ' ', ' ', ' ', ' ', 
 running = True
 clic = False
 game_over = False  # Variable pour voir l'état du jeu
+nb_cases = 0  # Compteur de cases découvertes par le joueur
 while running:
     # Evenements pygame
     for event in pg.event.get():
